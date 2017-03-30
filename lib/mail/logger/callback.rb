@@ -1,4 +1,5 @@
 class Mail::Logger::Callback
+
   PROPERTIES = %i(from to cc bcc subject message_id mime_version content_type content_transfer_encoding)
 
   def self.delivered_email(email)
@@ -7,8 +8,7 @@ class Mail::Logger::Callback
     end.join("\n") << "\n"
 
     if Mail::Logger.configuration.include_body?
-      bodies = email.body.parts.empty? && [ email.body ] || email.body.parts
-      text << "Body:\n" << bodies.map(&:to_s).join("\n")
+      text << "Body:\n" << email.text_part.body.decoded
     end
 
     Mail::Logger.logger.info(text)
